@@ -1,0 +1,9 @@
+From: Dr. Karimov <a.karimov@university.example.edu>
+Subject: Re: Minor project review on Thursday
+
+Hi Diyora,
+
+Thanks for sending the draft. I read the methodology section and have a few comments, mostly about how you split the training and test data. Let's go through them on Thursday at 14:00 in room 204. Please bring the latest results table.
+
+Best regards,
+A. Karimov

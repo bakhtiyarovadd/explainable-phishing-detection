@@ -1,0 +1,14 @@
+   venv/
+   __pycache__/
+   *.pyc
+   data/CEAS_08.csv
+   data/combined.csv
+   data/Nazario.csv
+   data/Enron.csv
+   data/Nigerian_Fraud.csv
+   data/SpamAssasin.csv
+   models_backup/
+   results_backup/
+   results/llm_cache.jsonl
+   .env
+   

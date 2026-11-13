@@ -1,0 +1,9 @@
+From: Python Weekly <newsletter@pythonweekly.example.org>
+Subject: Python Weekly - Issue 412
+
+Hello,
+
+Here are this week's highlights: a tutorial on type hints, a deep dive into the new release candidate, and a guide to profiling slow code. You are receiving this email because you subscribed to the list. You can unsubscribe at any time using the link in the footer of the website.
+
+Thanks for reading,
+The Python Weekly team

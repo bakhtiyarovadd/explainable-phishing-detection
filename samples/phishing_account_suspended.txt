@@ -1,0 +1,12 @@
+From: Security Team <support-team4821@mail-secure-alert.info>
+Subject: URGENT: Your account will be suspended within 24 hours
+
+Dear customer,
+
+We detected unusual activity on your account. To avoid permanent suspension you must verify your password and confirm your card number immediately.
+
+Click here to verify now: http://192.0.2.45/secure/login/verify.php
+
+Failure to act now will result in loss of access. This is your FINAL NOTICE!!!
+
+Account Security Department

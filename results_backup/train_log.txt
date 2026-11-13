@@ -1,0 +1,12 @@
+Loaded 39,154 emails  (21,842 phishing/spam, 17,312 legitimate)
+Extracting features ...
+TF-IDF vocabulary: 30,000 terms; train 31,323 / test 7,831
+Logistic Regression (TF-IDF)       acc=0.9976 f1=0.9978 auc=0.9999 fpr=0.0032 fnr=0.0018 train=0.6s
+Linear SVM (TF-IDF)                acc=0.9977 f1=0.9979 auc=0.9999 fpr=0.0029 fnr=0.0018 train=0.4s
+Naive Bayes (TF-IDF)               acc=0.9842 f1=0.9856 auc=0.9997 fpr=0.0009 fnr=0.0277 train=0.0s
+Random Forest (handcrafted)        acc=0.9895 f1=0.9906 auc=0.9992 fpr=0.0133 fnr=0.0082 train=5.7s
+XGBoost (handcrafted)              acc=0.9893 f1=0.9904 auc=0.9989 fpr=0.0144 fnr=0.0078 train=0.7s
+XGBoost (TF-IDF + handcrafted)     acc=0.9962 f1=0.9966 auc=0.9998 fpr=0.0049 fnr=0.0030 train=27.7s
+
+Best model by F1: Linear SVM (TF-IDF)
+Done in 217s
