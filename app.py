@@ -7,6 +7,7 @@ Shows, side by side, (1) a traditional ML verdict with word/feature-level explan
 from __future__ import annotations
 
 import os
+import json
 from pathlib import Path
 
 import joblib
@@ -31,13 +32,47 @@ def load_bundle():
         if not path.exists():
             continue
         try:
-            return joblib.load(path)
+            bundle = joblib.load(path)
+            bundle["_loaded_from"] = path.relative_to(ROOT).as_posix()
+            return bundle
         except Exception as exc:  # pragma: no cover - reported to the user in the UI.
             errors.append(f"{path}: {exc}")
     raise RuntimeError(
         "The trained model bundle could not be loaded. The file is missing or corrupt. "
         "Run `python scripts/train.py` from the project root to regenerate `models/bundle.joblib`."
     )
+
+
+def dataset_info(bundle: dict) -> dict:
+    if bundle.get("dataset_name") and bundle.get("dataset_path"):
+        return {
+            "name": bundle["dataset_name"],
+            "path": bundle["dataset_path"],
+            "n_emails": bundle.get("dataset_n_emails"),
+            "n_phishing": bundle.get("dataset_n_phishing"),
+            "n_legit": bundle.get("dataset_n_legit"),
+        }
+
+    loaded_from = bundle.get("_loaded_from", "")
+    if "spamassassin" in loaded_from.lower():
+        metrics_path = ROOT / "results" / "metrics_spamassassin.json"
+        name = "SpamAssassin"
+        data_path = "data/SpamAssasin.csv"
+    else:
+        metrics_path = ROOT / "results" / "metrics.json"
+        name = "CEAS-08"
+        data_path = "data/CEAS_08.csv"
+
+    counts = {}
+    if metrics_path.exists():
+        counts = json.loads(metrics_path.read_text()).get("dataset", {})
+    return {
+        "name": name,
+        "path": data_path,
+        "n_emails": counts.get("n_emails"),
+        "n_phishing": counts.get("n_phishing"),
+        "n_legit": counts.get("n_legit"),
+    }
 
 
 def load_samples() -> dict[str, dict]:
@@ -86,6 +121,17 @@ except RuntimeError as exc:
 
 with st.sidebar:
     st.header("Settings")
+    dataset = dataset_info(bundle)
+    st.subheader("Active training dataset")
+    st.markdown(f"**{dataset['name']}**")
+    if dataset["n_emails"] is not None:
+        st.caption(
+            f"{dataset['n_emails']:,} emails: "
+            f"{dataset['n_phishing']:,} phishing/spam, "
+            f"{dataset['n_legit']:,} legitimate"
+        )
+    st.caption(f"Data: `{dataset['path']}`")
+    st.caption(f"Model bundle: `{bundle['_loaded_from']}`")
     model_name = st.selectbox("Traditional ML model", list(bundle["models"]),
                               index=list(bundle["models"]).index(bundle["best"]))
     use_llm = st.checkbox("Also run LLM analysis", value=False)
@@ -94,8 +140,7 @@ with st.sidebar:
     llm_model = st.text_input("LLM model", value=DEFAULT_MODEL, disabled=not use_llm)
     lime_samples = st.slider("LIME perturbations", 200, 2000, 500, step=100,
                              help="More perturbations = more stable (but slower) LIME explanations.")
-    st.caption("Trained on the CEAS-08 corpus (39,154 labelled emails). Use as decision support, not as the sole "
-               "basis for blocking mail.")
+    st.caption("This is decision support, not the sole basis for blocking mail.")
 
 st.title("🛡️ Explainable Phishing Email Detector")
 st.write("Paste an email and compare a **traditional machine-learning model** with an **LLM analyst**. "

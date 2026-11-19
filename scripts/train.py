@@ -146,8 +146,18 @@ def main():
               f"fpr={m['fpr']:.4f} fnr={m['fnr']:.4f} train={train_s:.1f}s")
 
     best = max(results, key=lambda k: results[k]["f1"])
+    data_path = Path(args.data)
+    try:
+        dataset_path = data_path.relative_to(ROOT).as_posix()
+    except ValueError:
+        dataset_path = data_path.as_posix()
     bundle = {"tfidf": tfidf, "selector": sel, "models": fitted, "kinds": {k: v[0] for k, v in build_models(args.seed).items()},
-              "feature_names": FEATURE_NAMES, "best": best, "seed": args.seed}
+              "feature_names": FEATURE_NAMES, "best": best, "seed": args.seed,
+              "dataset_name": data_path.stem,
+              "dataset_path": dataset_path,
+              "dataset_n_emails": int(len(df)),
+              "dataset_n_phishing": int(y.sum()),
+              "dataset_n_legit": int((y == 0).sum())}
     joblib.dump(bundle, ROOT / "models" / f"bundle{suf}.joblib", compress=3)
 
     # background sample for SHAP / feature-importance plots
